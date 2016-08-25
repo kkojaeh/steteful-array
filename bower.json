@@ -1,0 +1,27 @@
+{
+  "name": "stateful-array",
+  "authors": [
+    "kkojaeh <kkojaeh@gmail.com>"
+  ],
+  "description": "상태를 갖는  Array",
+  "main": "",
+  "keywords": [
+    "array",
+    "stateful"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "private": false,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "proxy-polyfill" : "0.1.6",
+    "emitter" : "component/emitter#1.2.1",
+    "requirejs" : "requirejs#2.2.0"
+  }
+}
