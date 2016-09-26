@@ -23,8 +23,9 @@ module.exports = function(config) {
     files: [
       'bower_components/emitter/index.js',
       'bower_components/proxy-polyfill/proxy.min.js',
-      'bower_components/requirejs/require.js',
-      'src/**/*.js',
+//      'bower_components/requirejs/require.js',
+      'src/stateful-array.js',
+      'src/crud-array.js',
       'test/**/*.test.js'
     ],
 

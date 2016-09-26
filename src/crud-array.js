@@ -1,11 +1,15 @@
-(function(mod) {
-    if (typeof exports == "object" && typeof module == "object") // CommonJS
-        mod(require("./stateful-array"));
-    else if (typeof define == "function" && define.amd) // AMD
-        define(["./stateful-array"], mod);
-    else // Plain browser env
-        mod(StatefulArray);
-})(function(StatefulArray) {
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD
+        define(['stateful-array'], factory);
+    } else if (typeof exports === 'object') {
+        // Node, CommonJS-like
+        module.exports = factory(require('stateful-array'));
+    } else {
+        // Browser globals (root is window)
+        root.CrudArray = factory(root.StatefulArray);
+    }
+}(this, function(StatefulArray) {
     'use strict';
     /**
      * CrudArray 의 생성자
@@ -39,5 +43,4 @@
 
     return CrudArray;
 
-});
-
+}));

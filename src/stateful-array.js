@@ -1,11 +1,15 @@
-(function(mod) {
-    if (typeof exports == "object" && typeof module == "object") // CommonJS
-        module.exports = mod();
-    else if (typeof define == "function" && define.amd) // AMD
-        return define([], mod);
-    else // Plain browser env
-        (this || window).StatefulArray = mod();
-})(function() {
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD
+        define([], factory);
+    } else if (typeof exports === 'object') {
+        // Node, CommonJS-like
+        module.exports = factory();
+    } else {
+        // Browser globals (root is window)
+        root.StatefulArray = factory();
+    }
+}(this, function() {
     'use strict';
 
     var isArray = Array.isArray || (function (a) {
@@ -306,4 +310,4 @@
     };
 
     return StatefulArray;
-});
+}));

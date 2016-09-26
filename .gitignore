@@ -1,5 +1,4 @@
-/brower_components/**/*
-
-/.drea/**/*
-
-/.settting/**/*
+bower_components/**
+.idea/**
+.settting/**
+.project
