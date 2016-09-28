@@ -1,16 +1,6 @@
-(function (root, factory) {
-    if (typeof define === 'function' && define.amd) {
-        // AMD
-        define(['stateful-array'], factory);
-    } else if (typeof exports === 'object') {
-        // Node, CommonJS-like
-        module.exports = factory(require('stateful-array'));
-    } else {
-        // Browser globals (root is window)
-        root.returnExports = factory(root.StatefulArray);
-    }
-}(this, function(StatefulArray){
-	describe('array', function () {
+'use strict';
+import { StatefulArray } from "../src/stateful-array.js"; 
+describe('array', function () {
 	    var array;
 	    beforeEach(function () {
 	        array = new StatefulArray();
@@ -78,4 +68,3 @@
 	        });
 	    });
 	});
-}));

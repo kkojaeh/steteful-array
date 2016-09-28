@@ -1,5 +1,6 @@
 // Karma configuration
 // Generated on Tue Aug 23 2016 23:12:04 GMT+0900 (대한민국 표준시)
+// https://github.com/babel/karma-babel-preprocessor
 
 module.exports = function(config) {
   config.set({
@@ -7,7 +8,9 @@ module.exports = function(config) {
     plugins : [
       'karma-chrome-launcher',
       'karma-ie-launcher',
-      'karma-jasmine'
+      'karma-jasmine',
+      'karma-requirejs',
+      'karma-babel-preprocessor'
     ],
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -16,14 +19,15 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine'],
+    frameworks: ['jasmine', 'requirejs'],
 
 
     // list of files / patterns to load in the browser
     files: [
+      'node_modules/karma-babel-preprocessor/node_modules/babel-core/browser-polyfill.js',
       'bower_components/emitter/index.js',
       'bower_components/proxy-polyfill/proxy.min.js',
-//      'bower_components/requirejs/require.js',
+      'bower_components/requirejs/require.js',
       'src/stateful-array.js',
       'src/crud-array.js',
       'test/**/*.test.js'
@@ -36,8 +40,23 @@ module.exports = function(config) {
 
 
     // preprocess matching files before serving them to the browser
-    // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
+    // available preprocessors:
+	// https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+    	'src/**/*.js': ['babel'],
+        'test/**/*.js': ['babel']
+    },
+    babelPreprocessor: {
+    	options: {
+    		presets: ['es2015'],
+    		sourceMap: 'inline'
+    	},
+    	filename: function (file) {
+    		return file.originalPath.replace(/\.js$/, '.es5.js');
+    	},
+    	sourceFileName: function (file) {
+    		return file.originalPath;
+    	}
     },
 
 
@@ -56,27 +75,31 @@ module.exports = function(config) {
 
 
     // level of logging
-    // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    logLevel: config.LOG_INFO,
+    // possible values: config.LOG_DISABLE || config.LOG_ERROR ||
+	// config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
+    logLevel: config.LOG_DEBUG,
 
 
-    // enable / disable watching file and executing tests whenever any file changes
+    // enable / disable watching file and executing tests whenever any file
+	// changes
     autoWatch: true,
 
 
     // start these browsers
-    // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome', 'IE', 'IE9', 'IE8'],
+    // available browser launchers:
+	// https://npmjs.org/browse/keyword/karma-launcher
+    //browsers: ['Chrome', 'IE', 'IE10', 'IE9'],
+    browsers: ['Chrome'],
 
     customLaunchers: {
-      IE9: {
-        base: 'IE',
-        'x-ua-compatible': 'IE=EmulateIE9'
-      },
-      IE8: {
-        base: 'IE',
-        'x-ua-compatible': 'IE=EmulateIE8'
-      }
+    	IE10: {
+    		base: 'IE',
+	        'x-ua-compatible': 'IE=EmulateIE10'
+    	},
+    	IE9: {
+    		base: 'IE',
+    		'x-ua-compatible': 'IE=EmulateIE9'
+    	}
     },
 
 
