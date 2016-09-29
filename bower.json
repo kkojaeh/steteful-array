@@ -21,7 +21,6 @@
   ],
   "dependencies": {
     "proxy-polyfill" : "0.1.6",
-    "emitter" : "component/emitter#1.2.1",
-    "requirejs" : "requirejs#2.2.0"
+    "emitter" : "component/emitter#1.2.1"
   }
 }

@@ -1,5 +1,5 @@
 'use strict';
-import { StatefulArray } from "../src/stateful-array.js"; 
+import {StatefulArray} from "../src/stateful-array.js"; 
 describe('array', function () {
 	    var array;
 	    beforeEach(function () {

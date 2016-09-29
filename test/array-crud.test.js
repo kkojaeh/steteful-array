@@ -1,5 +1,5 @@
 'use strict';
-import { StatefulArray } from "../src/crud-array.js";
+import {CrudArray} from "../src/crud-array.js";
 describe('array', function () {
     var array;
     beforeEach(function () {
@@ -10,7 +10,7 @@ describe('array', function () {
     });
 
     it('생성 인자에 Array 를 전달하면 Array 와 동일', function () {
-        array = new StatefulArray(['1', '2', '3']);
+        array = new CrudArray(['1', '2', '3']);
         expect(array.length).toBe(3);
         expect(array[0]).toBe('1');
         expect(array[1]).toBe('2');

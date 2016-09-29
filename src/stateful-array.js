@@ -1,10 +1,29 @@
-'use strict';
 /*let isArray = Array.isArray || (function (a) {
     return '' + a !== a && {}.toString.call(a) == '[object Array]'
 });
 let ptype = Array.prototype;*/
 
-export class StatefulArray extends Array{
+/**
+ * StatefulArray 인스턴스의 유일한 아이디를 생성하는 메소드
+ * 생성시 호출 된다.
+ *
+ * @return {String} 유일한 아이디
+ * @api private
+ */
+let _generateDefaultId = function() {
+    var now = Date.now();
+    if (window.performance && typeof window.performance.now === "function") {
+        now += performance.now();
+    }
+    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = (now + Math.random() * 16) % 16 | 0;
+        now = Math.floor(now / 16);
+        return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+    return uuid;
+};
+1+1;
+class StatefulArray extends Array{
 	/**
      * StatefulArray 의 생성자
      * Initialize `StatefulArray`
@@ -15,6 +34,7 @@ export class StatefulArray extends Array{
      */
 	constructor(array = []){
 		super();
+		Emitter(this);
 		
 		/**
 	     * Proxy 객체의 소유자를 반환한는 프로퍼티 이름
@@ -57,7 +77,7 @@ export class StatefulArray extends Array{
 	     * @type {String}
 	     * @api private
 	     */
-	    this._defaultId = this._generateDefaultId();
+	    this._defaultId = _generateDefaultId();
 
 	    /**
 	     * Proxy 에 부여되는 아이디 조합에 <code>_defaultId</code> 속성과 연관되어 사용된다.
@@ -262,26 +282,6 @@ export class StatefulArray extends Array{
             }
         }
     }
-    
-    /**
-     * StatefulArray 인스턴스의 유일한 아이디를 생성하는 메소드
-     * 생성시 호출 된다.
-     *
-     * @return {String} 유일한 아이디
-     * @api private
-     */
-    static _generateDefaultId() {
-        var now = Date.now();
-        if (window.performance && typeof window.performance.now === "function") {
-            now += performance.now();
-        }
-        var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            var r = (now + Math.random() * 16) % 16 | 0;
-            now = Math.floor(now / 16);
-            return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-        });
-        return uuid;
-    }
 
     /**
      * StatefulArray 인스턴스의 유일한 아이디를 생성하는 메소드
@@ -311,4 +311,4 @@ export class StatefulArray extends Array{
     }
 }
 
-//export default StatefulArray;
+export {StatefulArray};

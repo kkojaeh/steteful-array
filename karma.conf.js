@@ -9,7 +9,6 @@ module.exports = function(config) {
       'karma-chrome-launcher',
       'karma-ie-launcher',
       'karma-jasmine',
-      'karma-requirejs',
       'karma-babel-preprocessor'
     ],
 
@@ -19,15 +18,13 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine', 'requirejs'],
+    frameworks: ['jasmine'],
 
 
     // list of files / patterns to load in the browser
     files: [
-      'node_modules/karma-babel-preprocessor/node_modules/babel-core/browser-polyfill.js',
       'bower_components/emitter/index.js',
       'bower_components/proxy-polyfill/proxy.min.js',
-      'bower_components/requirejs/require.js',
       'src/stateful-array.js',
       'src/crud-array.js',
       'test/**/*.test.js'
@@ -43,22 +40,22 @@ module.exports = function(config) {
     // available preprocessors:
 	// https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-    	'src/**/*.js': ['babel'],
+    	'src/**/*.js': ['babel' ],
         'test/**/*.js': ['babel']
     },
     babelPreprocessor: {
     	options: {
     		presets: ['es2015'],
-    		sourceMap: 'inline'
+    		sourceMap: 'inline',
+    		plugins: ["transform-es2015-modules-umd"]
     	},
     	filename: function (file) {
-    		return file.originalPath.replace(/\.js$/, '.es5.js');
+    		return file.originalPath.replace(/\.js$/, '.js');
     	},
     	sourceFileName: function (file) {
     		return file.originalPath;
     	}
     },
-
 
     // test results reporter to use
     // possible values: 'dots', 'progress'

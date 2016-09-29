@@ -1,7 +1,6 @@
-'use strict';
-import { StatefulArray } from "./stateful-array";
-
-export class CrudArray extends StatefulArray{
+import {StatefulArray} from "stateful-array";
+console.log(StatefulArray.prototype);
+class CrudArray extends StatefulArray{
 	constructor(array = []){
 		super(array);
 		/**
@@ -18,3 +17,5 @@ export class CrudArray extends StatefulArray{
 	
 	a(){}
 }
+
+export {CrudArray};
