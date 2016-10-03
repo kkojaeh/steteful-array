@@ -1,4 +1,3 @@
-'use strict';
 /**
  * StatefulArray 의 생성자 Initialize `StatefulArray`
  * 
@@ -181,18 +180,18 @@ StatefulArray.prototype._wrap = function(element) {
 // Object 타입이고 소유자가 내가 아니라면 Proxy 생성
 if ((typeof element) == 'object' && element[this._proxyOwnerProperty] != this) {
     var id = me._generateId();
-    element = new Proxy(element, {
+    return new Proxy(element, {
         set(target, property, value) {
         	console.log('setter');
             setter(me, target, property, value);
             target[property] = value;
         },
         get(target, property) {
-        	console.log('getter', property == proxyStateProperty);
         	if(property == proxyIdProperty){
         		return id;
         	}
         	if (property == proxyStateProperty) {
+        		console.log('getter', property);
             	return me._proxyStates[id];
             }
             return getter(me, target, property);
@@ -240,6 +239,7 @@ StatefulArray.prototype._reesolveState = function (target, added, removed, prope
             result = this._stateResolvers[i].apply(this, [target, added, removed, property, value]);
             if (result) {
                 this._proxyStates[target[this._proxyIdProperty]] = result;
+                console.log(this._proxyStates);
                 break;
             }
         }

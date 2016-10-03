@@ -1,4 +1,3 @@
-'use strict';
 import StatefulArray from "../src/stateful-array"; 
 describe('array', function () {
 	    var array;

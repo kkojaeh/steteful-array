@@ -1,4 +1,3 @@
-'use strict';
 import StatefulArray from "../src/stateful-array";
 describe('add', function () {
     var array;
@@ -14,8 +13,8 @@ describe('add', function () {
         }];
     });
     it('추가하면 해당 객체의 상태가 `added` 로 표시', function () {
-    	array.push({ a : 1});
-    	console.log(array[0]);
-        expect(array[0][array._proxyStateProperty]).toBe('added');
+    	var o = array.push({ a : 1});
+    	//array[0].b = {};
+        //expect(array[0][array._proxyStateProperty]).toBe('added');
     });
 });
