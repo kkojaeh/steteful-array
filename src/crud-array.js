@@ -1,5 +1,5 @@
-import {StatefulArray} from "stateful-array";
-console.log(StatefulArray.prototype);
+import StatefulArray from "stateful-array.es5";
+
 class CrudArray extends StatefulArray{
 	constructor(array = []){
 		super(array);
@@ -14,8 +14,6 @@ class CrudArray extends StatefulArray{
 		let updateResolver = function(){};
 		let readResolver = function(){};
 	}
-	
-	a(){}
 }
 
-export {CrudArray};
+export default CrudArray;
