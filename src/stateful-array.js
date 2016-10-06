@@ -7,9 +7,10 @@
  * @api public
  */
 
-function StatefulArray(array) {
+function StatefulArray(array, properties) {
     this._defaultId = this._generateDefaultId();
     this._proxyStates = {};
+    this._proxyProperties = properties || [];
     array = array || [];
 
     if (Array.isArray(array)) {
@@ -20,6 +21,7 @@ function StatefulArray(array) {
         }
     }
     this.on('add', this._onAdd);
+    this.on('remove', this._onRemove);
 }
 
 StatefulArray.prototype = new Array();
@@ -148,16 +150,13 @@ StatefulArray.prototype._proxySetter = function (target, property, value) {
  *            property 접근된 프로퍼티
  * @api private
  */
-StatefulArray.prototype._proxyGetter = function (me, target, property) {
-    // TODO: 데이터 접근 및 키워드 정보 접근시 계산된 내용 리턴
-
-    // TODO: Proxy 여부를 의미하는 프로퍼티의 경우 true 를 반반환다.
+StatefulArray.prototype._proxyGetter = function (me, target, id, property) {
     if (property == me._proxyStateProperty) {
-        // TODO: 상태를 반환한다.
+    	return me._proxyStates[id];
     } else if (property == me._proxyIdProperty) {
-        // TODO: id 를 반환한다.
+        return id;
     } else if (property == me._proxyOwnerProperty) {
-        // TODO: 소유자를 반환한다.
+        return me;
     }
     return target[property];
 };
@@ -175,26 +174,25 @@ StatefulArray.prototype._wrap = function(element) {
 	setter = me._proxySetter,
     getter = me._proxyGetter,
     proxyIdProperty = me._proxyIdProperty,
-    proxyStateProperty = me._proxyStateProperty;
+    proxyStateProperty = me._proxyStateProperty,
+    proxyOwnerProperty = me._proxyOwnerProperty,
+    proxyProperties = me._proxyProperties;
 
 // Object 타입이고 소유자가 내가 아니라면 Proxy 생성
 if ((typeof element) == 'object' && element[this._proxyOwnerProperty] != this) {
     var id = me._generateId();
+    proxyProperties.concat([proxyIdProperty, proxyOwnerProperty, proxyStateProperty]).forEach(function(property){
+    	if(!element.hasOwnProperty(property)){
+    		element[property] = undefined;
+    	}
+    });
     return new Proxy(element, {
         set(target, property, value) {
-        	console.log('setter');
             setter(me, target, property, value);
             target[property] = value;
         },
         get(target, property) {
-        	if(property == proxyIdProperty){
-        		return id;
-        	}
-        	if (property == proxyStateProperty) {
-        		console.log('getter', property);
-            	return me._proxyStates[id];
-            }
-            return getter(me, target, property);
+            return getter(me, target, id, property);
         },
     });
 }
@@ -239,7 +237,6 @@ StatefulArray.prototype._reesolveState = function (target, added, removed, prope
             result = this._stateResolvers[i].apply(this, [target, added, removed, property, value]);
             if (result) {
                 this._proxyStates[target[this._proxyIdProperty]] = result;
-                console.log(this._proxyStates);
                 break;
             }
         }
@@ -313,6 +310,15 @@ StatefulArray.prototype._generateId = function () {
 StatefulArray.prototype._proxyStates = null;
 
 /**
+ * Proxy 객체의 프로퍼티 목록을 지정한다.
+ * 지정되지 않은 프로퍼티에 대입하면 오류가 발생된다.
+ * 
+ * @type {Array<String>}
+ * @api private
+ */
+StatefulArray.prototype._proxyProperties = null;
+
+/**
  * Proxy 객체 상태 및 데이트를 초기화한다.
  * 
  * @api public
@@ -327,6 +333,151 @@ StatefulArray.prototype.clear = function () {
  */
 StatefulArray.prototype._onAdd = function(element, index) {
 	this._reesolveState(element, true, false);
+}
+/**
+ * 요소가 삭제될때 발생되는 이벤트의 리스너
+ * @api private
+ */
+StatefulArray.prototype._onRemove = function(element, index){
+	this._reesolveState(element, false, true);
+}
+
+StatefulArray.propertyTypes = {
+	'string' : {
+		convert: function(v) {
+	        return (v === undefined || v === null) ? v : String(v);
+	    },
+	    equals: function(v1, v2){
+	    	return v1 == v2;
+	    }
+	},
+	'non-null-string' : {
+		convert: function(v) {
+	        return (v === undefined || v === null) ? '' : String(v);
+	    },
+	    equals: function(v1, v2){
+	    	return v1 == v2;
+	    }
+	},
+	'int' : {
+		convert: function(v) {
+	        if (typeof v === 'number') {
+	            return parseInt(v, 10);
+	        }
+	 
+	        var empty = v === undefined || v === null || v === '',
+	            out;
+	 
+	        if (empty) {
+	            out = null;
+	        }  else {
+	            out = parseInt(String(v), 10);
+	            if (isNaN(out)) {
+	                out = null;
+	            }
+	        }
+	        return out;
+	    },
+	    equals: function(v1, v2){
+	    	return parseInt(v1, 10) == parseInt(v2, 10);
+	    }
+	},
+	'non-null-int' : {
+		convert: function(v) {
+	        if (typeof v === 'number') {
+	            return parseInt(v, 10);
+	        }
+	 
+	        var empty = v === undefined || v === null || v === '',
+	            out;
+	 
+	        if (empty) {
+	            out = 0;
+	        }  else {
+	            out = parseInt(String(v), 10);
+	            if (isNaN(out)) {
+	                out = 0;
+	            }
+	        }
+	        return out;
+	    },
+	    equals: function(v1, v2){
+	    	return parseInt(v1, 10) == parseInt(v2, 10);
+	    }
+	},
+	'number' : {
+		convert: function(v) {
+	        if (typeof v === 'number') {
+	            return parseInt(v);
+	        }
+	 
+	        var empty = v === undefined || v === null || v === '',
+	            out;
+	 
+	        if (empty) {
+	            out = null;
+	        }  else {
+	            out = parseFloat(String(v));
+	            if (isNaN(out)) {
+	                out = null;
+	            }
+	        }
+	        return out;
+	    },
+	    equals: function(v1, v2){
+	    	return parseFloat(v1, 10) == parseFloat(v2, 10);
+	    }
+	},
+	'non-null-number' : {
+		convert: function(v) {
+	        if (typeof v === 'number') {
+	            return parseFloat(v);
+	        }
+	 
+	        var empty = v === undefined || v === null || v === '',
+	            out;
+	 
+	        if (empty) {
+	            out = 0;
+	        }  else {
+	            out = parseFloat(String(v));
+	            if (isNaN(out)) {
+	                out = 0;
+	            }
+	        }
+	        return out;
+	    },
+	    equals: function(v1, v2){
+	    	return parseFloat(v1) == parseFloat(v2);
+	    }
+	},
+	
+	'date' : {
+		convert: function(v) {
+			if (!v) {
+	            return null;
+	        }
+	 
+	        if (v instanceof Date) {
+	            return v;
+	        }
+	 
+	        var parsed = Date.parse(v);
+	        return parsed ? new Date(parsed) : null;
+	    },
+	    equals: function(v1, v2){
+	    	if(!v1 && !v2){
+	    		return true;
+	    	}
+	    	if(!v1 || !v2){
+	    		return false;
+	    	}
+	    	const gap = 1000 * 60 * 60 * 24;
+	    	return Math.floor(v1.getTime() / gap) == Math.floor(v2.getTime() /gap)
+	    }
+	}
+	
+	Math.floor(a.getTime() / gap) == Math.floor(b.getTime() /gap)
 }
 
 export default StatefulArray;
