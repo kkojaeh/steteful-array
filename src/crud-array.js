@@ -1,4 +1,4 @@
-import StatefulArray from "stateful-array.es5";
+import StatefulArray from "stateful-array";
 
 class CrudArray extends StatefulArray{
 	constructor(array = []){
